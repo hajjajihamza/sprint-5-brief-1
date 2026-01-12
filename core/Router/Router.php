@@ -4,7 +4,7 @@ namespace App\Router;
 
 class Router
 {
-    private static array $routes = [];
+    public static array $routes = [];
     
     public static function get(string $path, mixed $action): void
     {
