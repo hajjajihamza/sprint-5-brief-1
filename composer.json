@@ -1,0 +1,23 @@
+{
+  "name": "vendor_name/sprint-5-brief-1",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Hamza HAJAJJI",
+      "email": "hajjver@gmil.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Core\\": "app/",
+      "App\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=8.4",
+    "vlucas/phpdotenv": "^5.6",
+    "ext-pdo": "*"
+  }
+}
