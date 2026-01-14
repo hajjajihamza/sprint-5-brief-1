@@ -8,36 +8,44 @@ class Router
 
     public static function get(string $path, array $action): Route
     {
-        $route = new Route($path, $action);
-        self::$routes['GET'] = $route;
-        return $route;
+        return self::addRoute('GET', $path, $action);
     }
 
-    public static function post(string $path, array $action):   Route
+    public static function post(string $path, array $action): Route
     {
-        $route = new Route($path, $action);
-        self::$routes['POST'] = $route;
-        return $route;
+        return self::addRoute('POST', $path, $action);
     }
 
     public static function put(string $path, array $action): Route
     {
-        $route = new Route($path, $action);
-        self::$routes['PUT'] = $route;
-        return $route;
+        return self::addRoute('PUT', $path, $action);
     }
 
     public static function patch(string $path, array $action): Route
     {
-        $route = new Route($path, $action);
-        self::$routes['PATCH'] = $route;
-        return $route;
+        return self::addRoute('PATCH', $path, $action);
     }
 
     public static function delete(string $path, array $action): Route
     {
+        return self::addRoute('DELETE', $path, $action);
+    }
+
+    private static function addRoute(string $method, string $path, array $action): Route
+    {
         $route = new Route($path, $action);
-        self::$routes['DELETE'] = $route;
+        self::$routes[$method][] = $route;
         return $route;
+    }
+
+    public static function resolve(string $method, string $path): ?Route
+    {
+        foreach (self::$routes[$method] ?? [] as $route) {
+            if ($route->getPath() === $path) {
+                return $route;
+            }
+        }
+
+        return null;
     }
 }
