@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Controller;
 
+use Core\Http\Redirect;
 use Core\Http\Response;
 use JetBrains\PhpStorm\NoReturn;
 use RuntimeException;
@@ -37,7 +38,6 @@ class AbstractController
     #[NoReturn]
     protected function redirectToPath(string $path): void
     {
-        header('Location: ' . $path);
-        exit;
+        Redirect::to($path);
     }
 }
