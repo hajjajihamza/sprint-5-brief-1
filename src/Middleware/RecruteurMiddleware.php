@@ -14,8 +14,9 @@ class RecruteurMiddleware extends Middleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->user()) {
-            Redirect::to('/login');
+        //  not authorized user
+        if (!$request->user()?->getRole()->isCandidat()) {
+            return new Response('You are not authorized', 403);
         }
 
         return $next($request);

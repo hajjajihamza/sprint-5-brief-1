@@ -27,4 +27,19 @@ class Role
     {
         $this->name = $name;
     }
+
+    public function isAdmin() :  bool
+    {
+        return $this->name === 'admin';
+    }
+
+    public function isCandidat() : bool
+    {
+        return $this->name === 'candidat';
+    }
+
+    public function isRecruteur() : bool
+    {
+        return $this->name === 'recruteur';
+    }
 }

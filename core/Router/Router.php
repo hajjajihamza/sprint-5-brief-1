@@ -38,7 +38,7 @@ class Router
     
     public static function addRoute(string | array $methods, string $path, array $action): Route
     {
-        self::validateMethods(array_map('strtoupper', $methods));
+        self::validateMethods(is_array($methods) ? array_map('strtoupper', $methods) : strtoupper($methods));
 
         $route = new Route($path, $action);
 

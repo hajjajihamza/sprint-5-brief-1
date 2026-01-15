@@ -30,29 +30,48 @@ trait KernalTrait
         $action = $route->getAction();
         [$controllerClass, $methodName] = $action;
 
-        if (class_exists($controllerClass)) {
-            $controller = new $controllerClass();
-            if (method_exists($controller, $methodName)) {
-                // Check if the method expects parameters
-                $reflection = new \ReflectionMethod($controller, $methodName);
-
-                if ($reflection->getReturnType()?->getName() !== Response::class) {
-                    throw new \RuntimeException('The method must return a Response object');
-                }
-
-                $args = [];
-                if ($reflection->getNumberOfParameters() > 0) {
-                    $args[] = $request;
-                }
-
-                $response = $controller->$methodName(...$args);
-
-                $response->send();
-            } else {
-                new Response("Method $methodName not found in $controllerClass", 500)->send();
+        // Create the core action (the final step in the pipeline)
+        $next = static function (Request $request) use ($controllerClass, $methodName) {
+            if (!class_exists($controllerClass)) {
+                throw new \RuntimeException("Controller $controllerClass not found");
             }
-        } else {
-            new Response("Controller $controllerClass not found", 500)->send();
-        }
+
+            $controller = new $controllerClass();
+            if (!method_exists($controller, $methodName)) {
+                throw new \RuntimeException("Method $methodName not found in $controllerClass");
+            }
+
+            $reflection = new \ReflectionMethod($controller, $methodName);
+
+            if ($reflection->getReturnType()?->getName() !== Response::class) {
+                throw new \RuntimeException('The method must return a Response object');
+            }
+
+            $args = [];
+            if ($reflection->getNumberOfParameters() > 0) {
+                $args[] = $request;
+            }
+
+            return $controller->$methodName(...$args);
+        };
+
+        $middlewares = array_reverse($route->getMiddlewares());
+
+        $pipeline = array_reduce(
+            $middlewares,
+            static function ($stack, $middlewareClass) {
+                return static function (Request $request) use ($stack, $middlewareClass) {
+                    if (!class_exists($middlewareClass)) {
+                        throw new \RuntimeException("Middleware $middlewareClass not found");
+                    }
+                    return new $middlewareClass()->handle($request, $stack);
+                };
+            },
+            $next
+        );
+
+        $response = $pipeline($request);
+
+        $response->send();
     }
 }
