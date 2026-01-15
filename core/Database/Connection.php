@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Connection;
+namespace Core\Database;
 
 use PDO;
 use PDOException;

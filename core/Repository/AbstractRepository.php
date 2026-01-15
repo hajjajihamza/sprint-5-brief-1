@@ -2,7 +2,8 @@
 
 namespace Core\Repository;
 
-use Core\Connection\Connection;
+
+use Core\Database\Connection;
 
 abstract class AbstractRepository
 {
@@ -26,5 +27,5 @@ abstract class AbstractRepository
         return $result ?: null;
     }
 
-    abstract protected function mapToObject(array $data): object;
+    abstract public function mapToObject(array $data);
 }

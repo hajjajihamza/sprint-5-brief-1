@@ -10,6 +10,23 @@ class UserRepository extends AbstractRepository
 {
     protected string $tableName = 'users';
 
+    public function create(User $user): bool
+    {
+        $stmt = $this->pdo->prepare("INSERT INTO {$this->tableName} (name, email, password, role_id) VALUES (:name, :email, :password, :role_id)");
+        $success = $stmt->execute([
+            ':name' => $user->getName(),
+            ':email' => $user->getEmail(),
+            ':password' => password_hash($user->getPassword(), PASSWORD_DEFAULT),
+            ':role_id' => $user->getRole()->getId(),
+        ]);
+
+        if ($success) {
+            $user->setId((int) $this->pdo->lastInsertId());
+        }
+
+        return $success;
+    }
+
     public function findByEmailAsObject(string $email): ?User
     {
         $data = $this->findByEmail($email);
@@ -30,10 +47,10 @@ class UserRepository extends AbstractRepository
         return $result ?: null;
     }
 
-    protected function mapToObject(array $data): User
+    public function mapToObject(array $data): User
     {
         $role = new Role($data['role_id'], $data['role_name']);
 
-        return new User($data['id'], $data['name'], $data['email'], $data['password'], $role);
+        return new User(isset($data['id']) ? (int) $data['id'] : null, $data['name'], $data['email'], $data['password'], $role);
     }
 }

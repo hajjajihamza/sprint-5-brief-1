@@ -1,6 +1,6 @@
 -- Création de la base de données
-CREATE DATABASE IF NOT EXISTS talent-hub;
-USE talent-hub;
+CREATE DATABASE IF NOT EXISTS talent_hub;
+USE talent_hub;
 
 -- Table des rôles
 CREATE TABLE roles (

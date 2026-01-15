@@ -9,7 +9,7 @@ use Core\Http\Response;
 use JetBrains\PhpStorm\NoReturn;
 use RuntimeException;
 
-class AbstractController
+abstract class AbstractController
 {
     protected function renderView(string $path, array $data = []): string
     {
