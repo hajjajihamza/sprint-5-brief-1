@@ -31,11 +31,45 @@ class Router
         return self::addRoute('DELETE', $path, $action);
     }
 
-    private static function addRoute(string $method, string $path, array $action): Route
+    public static function match(array $methods, string $path, array $action): Route
     {
+        return self::addRoute($methods, $path, $action);
+    }
+    
+    public static function addRoute(string | array $methods, string $path, array $action): Route
+    {
+        self::validateMethods(array_map('strtoupper', $methods));
+
         $route = new Route($path, $action);
-        self::$routes[$method][] = $route;
+
+        if (is_array($methods)) {
+            foreach ($methods as $method) {
+                self::$routes[$method][] = $route;
+            }
+        } else {
+            self::$routes[$methods][] = $route;
+        }
+
         return $route;
+    }
+
+    private static function validateMethods(string | array $methods): void
+    {
+        $validMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'];
+
+        $validate = static function (string $method) use ($validMethods) {
+            if (!in_array($method, $validMethods)) {
+                throw new \InvalidArgumentException("Invalid HTTP method: $method");
+            }
+        };
+
+        if (is_array($methods)) {
+            foreach ($methods as $method) {
+                $validate($method);
+            }
+        } else {
+            $validate($methods);
+        }
     }
 
     public static function resolve(string $method, string $path): ?Route
