@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Http;
 
-use src\Entity\User;
+use App\Entity\User;
 
 class Request
 {

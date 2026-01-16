@@ -1,6 +1,6 @@
 <?php
 
-namespace src\Entity;
+namespace App\Entity;
 
 class Role
 {
@@ -41,5 +41,10 @@ class Role
     public function isRecruteur() : bool
     {
         return $this->name === 'recruteur';
+    }
+
+    public function __toString(): string
+    {
+        return $this->name;
     }
 }

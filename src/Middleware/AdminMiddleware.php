@@ -6,6 +6,7 @@ use Core\Http\Redirect;
 use Core\Http\Request;
 use Core\Http\Response;
 use Closure;
+use Core\Utils\ViewUtil;
 
 class AdminMiddleware extends Middleware
 {
@@ -16,7 +17,7 @@ class AdminMiddleware extends Middleware
     {
         //  not authorized user
         if (!$request->user()?->getRole()->isAdmin()) {
-            return new Response('You are not authorized', 403);
+            return new Response(ViewUtil::renderView('errors/403'), 403);
         }
 
         return $next($request);

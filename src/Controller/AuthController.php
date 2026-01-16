@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use Core\Controller\AbstractController;
@@ -22,26 +23,39 @@ class AuthController extends AbstractController
         $this->roleRepository = new RoleRepository($connection);
     }
 
+    private function redirectAuth(User $user) : void
+    {
+        if ($user->getRole()->isAdmin()) {
+            $this->redirectToPath('/admin');
+        } elseif ($user->getRole()->isCandidat()) {
+            $this->redirectToPath('/candidat');
+        } else {
+            $this->redirectToPath('/recruteur');
+        }
+    }
+
     public function login(Request $request): Response
     {
         if ($request->isMethod('POST')) {
-            $email = $request->input('email');
-            $password = $request->input('password');
+            $email = trim($request->input('email'));
+            $password = trim($request->input('password'));
 
             $user = $this->userRepository->findByEmailAsObject($email);
+
             if ($user && password_verify($password, $user->getPassword())) {
                 $request->setSession('user', $user);
-                if ($user->getRole()->isAdmin()) {
-                    $this->redirectToPath('/admin');
-                } elseif ($user->getRole()->isCandidat()) {
-                    $this->redirectToPath('/candidat');
-                } else {
-                    $this->redirectToPath('/recruteur');
-                }
+                $request->session()->flash('success', 'Vous êtes connecté');
+                $this->redirectAuth($user);
+            } else {
+                $request->session()->flash('error', 'Identifiants incorrects');
             }
         }
 
-        return $this->render('auth/login');
+        if ($request->user()) {
+            $this->redirectAuth($request->user());
+        }
+
+        return $this->render('auth/login', ['request' => $request]);
     }
 
     public function register(Request $request): Response
@@ -62,7 +76,11 @@ class AuthController extends AbstractController
                 'role_name' => $role?->getName(),
             ]));
 
-            $this->redirectToPath('/login');
+            $this->redirectToPath('/');
+        }
+
+        if ($request->user()) {
+            $this->redirectAuth($request->user());
         }
 
         return $this->render('auth/register');
@@ -72,6 +90,6 @@ class AuthController extends AbstractController
     {
         $request->setSession('user', null);
         $request->session()->destroy();
-        $this->redirectToPath('/login');
+        $this->redirectToPath('/');
     }
 }

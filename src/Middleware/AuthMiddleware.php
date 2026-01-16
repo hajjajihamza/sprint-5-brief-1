@@ -15,7 +15,7 @@ class AuthMiddleware extends Middleware
     public function handle(Request $request, Closure $next): Response
     {
         if (!$request->user()) {
-            Redirect::to('/login');
+            Redirect::to('/');
         }
 
         return $next($request);

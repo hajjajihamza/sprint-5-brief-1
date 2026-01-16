@@ -3,8 +3,8 @@
 namespace App\Repository;
 
 use Core\Repository\AbstractRepository;
-use src\Entity\Role;
-use src\Entity\User;
+use App\Entity\Role;
+use App\Entity\User;
 
 class UserRepository extends AbstractRepository
 {
@@ -40,7 +40,7 @@ class UserRepository extends AbstractRepository
 
     private function findByEmail(string $email): ?array
     {
-        $stmt = $this->pdo->prepare("SELECT u.*, r.name as role_name FROM {$this->tableName} as u INNER JOIN roles AS r ON u.role_id = r.id WHERE u.id = :email");
+        $stmt = $this->pdo->prepare("SELECT u.*, r.name as role_name FROM {$this->tableName} as u INNER JOIN roles AS r ON u.role_id = r.id WHERE u.email = :email");
         $stmt->execute([':email' => $email]);
         $result = $stmt->fetch();
 

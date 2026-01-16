@@ -1,6 +1,6 @@
 <?php
 
-namespace src\Entity;
+namespace App\Entity;
 
 class User
 {
@@ -68,5 +68,10 @@ class User
     {
         $this->role = $role;
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->name;
     }
 }

@@ -5,6 +5,7 @@ namespace Core\Trait;
 use Core\Http\Request;
 use Core\Http\Response;
 use Core\Router\Router;
+use Core\Utils\ViewUtil;
 
 trait KernalTrait
 {
@@ -23,7 +24,7 @@ trait KernalTrait
         $route = Router::resolve($method, $path);
 
         if (!$route) {
-            new Response('404 Not Found', 404)->send();
+            new Response(ViewUtil::renderView('errors/404'), 404)->send();
             return;
         }
 
