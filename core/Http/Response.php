@@ -26,11 +26,9 @@ class Response
         return $this;
     }
 
-    public function sendContent(): static
+    private function sendContent(): void
     {
         echo $this->content;
-
-        return $this;
     }
 
     public function send(): void
