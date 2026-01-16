@@ -38,10 +38,9 @@
                             
                             <div class="mb-3">
                                 <label for="role" class="form-label">Type de compte</label>
-                                <select class="form-select" id="role" name="role" required>
-                                    <option value="" disabled selected>Sélectionnez votre rôle</option>
-                                    <option value="candidat">Candidat</option>
-                                    <option value="recruteur">Recruteur</option>
+                                <select class="form-select" id="role" name="role_id" required>
+                                    <option value="2">Candidat</option>
+                                    <option value="3">Recruteur</option>
                                 </select>
                             </div>
                             

@@ -64,7 +64,7 @@ class AuthController extends AbstractController
             $name = $request->input('name');
             $email = $request->input('email');
             $password = $request->input('password');
-            $role_id = $request->input('role_id');
+            $role_id = (int) $request->input('role_id');
 
             $role = $this->roleRepository->findAsObject($role_id);
 
@@ -76,6 +76,7 @@ class AuthController extends AbstractController
                 'role_name' => $role?->getName(),
             ]));
 
+            $request->session()->flash('success', 'Votre compte a été créé');
             $this->redirectToPath('/');
         }
 
@@ -90,6 +91,7 @@ class AuthController extends AbstractController
     {
         $request->setSession('user', null);
         $request->session()->destroy();
+        $request->session()->flash('success', 'Vous êtes déconnecté');
         $this->redirectToPath('/');
     }
 }

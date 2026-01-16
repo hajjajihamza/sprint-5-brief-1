@@ -28,6 +28,14 @@
                             </div>
                         <?php endif; ?>
 
+                        <?php $success = $request->session()->getFlash('success') ?>
+
+                        <?php if ($success): ?>
+                            <div class="alert alert-success" role="alert">
+                                <?= $success ?>
+                            </div>
+                        <?php endif; ?>
+
                         <form method="POST" action="/">
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>

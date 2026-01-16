@@ -3,10 +3,11 @@
 namespace App\Repository;
 
 use Core\Repository\AbstractRepository;
-use src\Entity\Role;
+use App\Entity\Role;
 
 class RoleRepository extends AbstractRepository
 {
+    protected string $tableName = 'roles';
     public function findAsObject(int $id): ?Role
     {
         $data = $this->find($id);
